@@ -11,9 +11,8 @@
 ******************************************************************************/
 
 #include "fsm.h"
-#include "recipe.h"
 
-void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned char *instruction_arr) {
+void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned int *instruction_arr) {
     // Set current state to wait to wait for motors to reach home position
     state_machine_params->current_state = STATE_WAIT;
     state_machine_params->delay = delay;

@@ -13,6 +13,7 @@
 #define FSM_H 
 
 #include "motor.h"
+#include "recipe.h"
 
 typedef enum {
     STATE_PARSE,
@@ -24,12 +25,12 @@ struct fsm {
     state_t current_state;
     unsigned int delay;
     unsigned int channel;
-    unsigned char *instruction_arr;
+    unsigned int *instruction_arr;
     unsigned int cmd_index;
 };
 
 // function prototypes
-void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned char *instruction_arr);
+void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned int *instruction_arr);
 void process_SM(struct fsm *state_machine_params);
 
 #endif

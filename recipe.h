@@ -22,4 +22,6 @@
 #define END_LOOP (0xA0)
 #define RECIPE_END (0)
 
+extern unsigned int cmd_arr1[100];
+
 #endif
