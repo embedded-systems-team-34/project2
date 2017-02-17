@@ -9,8 +9,8 @@
 *     Madison Smith    - ms8565@rit.edu  
 *
 ******************************************************************************/
-#ifndef fsm_H
-#define fsm_H 
+#ifndef FSM_H
+#define FSM_H 
 
 #include "motor.h"
 
@@ -25,6 +25,7 @@ struct fsm {
     unsigned int delay;
     unsigned int channel;
     unsigned char *instruction_arr;
+    unsigned int cmd_index;
 };
 
 // function prototypes
