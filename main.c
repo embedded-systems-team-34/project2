@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 uint8_t buffer[BufferSize];
 struct fsm motor0_SM;
@@ -55,7 +56,16 @@ void parseUserInput(char *string,unsigned int length) {
         return;
     }
     // Length must be 2 so this is a valid command to parse
-     
+    
+    // convert entered commands to uppercase 
+    string[0] = toupper(string[0]); 
+    string[1] = toupper(string[1]);
+    
+    // Only process the command if no 'x' are detected
+    if ((string[0] != 'X') && (string[1] != 'X')) {
+        parseSerialCommand(&motor0_SM, string[0]);
+        parseSerialCommand(&motor1_SM, string[1]);
+    }
 }
 
 void getLine() {

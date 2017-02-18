@@ -95,3 +95,35 @@ unsigned int setMotorPosition( unsigned int channel_num, unsigned int commanded_
 	}
 	return position_delta * ONE_POSITION_DELAY;
 }
+
+// channel_num - channel to move 
+// direction - +1 indicates move right, -1 indicates move left
+// return - returns delay needed by motor to reach the position
+unsigned int incrementalMotorMove( unsigned int channel_num, int direction) {
+    
+    unsigned int delay = 0;
+    
+    // Handle channel 0
+    if (channel_num == 0) {
+        // Move right iff not at full right position
+        if ((direction == 1) && (motor_position[0] != 5)) {
+            delay = setMotorPosition(0, motor_position[0] + 1);
+        } 
+        // move left iff not at full left position
+        else if ((direction == -1) && (motor_position[0] != 0)) {
+            delay = setMotorPosition(0, motor_position[0] - 1);
+        }
+    }
+    // Handle channel 2
+    else {
+        // Move right iff not at full right position
+        if ((direction == 1) && (motor_position[1] != 5)) {
+            delay = setMotorPosition(1, motor_position[1] + 1);
+        } 
+        // move left iff not at full left position
+        else if ((direction == -1) && (motor_position[1] != 0)) {
+            delay = setMotorPosition(1, motor_position[1] - 1);
+        }
+    }
+    return delay;
+}

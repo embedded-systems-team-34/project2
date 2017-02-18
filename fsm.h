@@ -18,6 +18,7 @@
 typedef enum {
     STATE_PARSE,
     STATE_WAIT,
+    STATE_INCREMENTAL_MOVE,
     STATE_ERROR
 } state_t;
 
@@ -34,11 +35,17 @@ struct fsm {
     unsigned int inLoopFlag;
     // Count of number of iterations to loop over
     unsigned int iterationsLeftToLoop;
+    // 1 means that recipe execution is paused
+    // 0 means that recipe execution is live (not paused)
+    unsigned int isPaused;
+    // Direction to move on an incremental move +1 is right, -1 is left
+    int incrementalMoveDirection;
     
 };
 
 // function prototypes
 void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned int *instruction_arr);
 void process_SM(struct fsm *state_machine_params);
+void parseSerialCommand(struct fsm *state_machine_params, char command);
 
 #endif
