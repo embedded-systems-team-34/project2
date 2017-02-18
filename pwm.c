@@ -34,7 +34,7 @@ void pwmInit() {
     // Set PWM mode 1, channel 1 is active as long as TIMx->CNT < TIMx->CCR1
     TIM5->CCMR1 |= 0x60;
 		// Set PWM mode 1, channel 1 is active as long as TIMx->CNT < TIMx->CCR1
-		TIM5->CCMR1 |= 0x3000;
+		TIM5->CCMR1 |= 0x6000;
 		// Enable Output compare on channel 1
     TIM5->CCER |= 1;
 		TIM5->CCER |= 0x10;

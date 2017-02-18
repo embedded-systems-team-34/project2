@@ -64,11 +64,11 @@ unsigned int motorInit() {
 	  pwmInit();
 	
 	// Command a known position from motors on startup
-	setMotorPosition(0,MOTOR_POSITON_ONE);
-	setMotorPosition(1,MOTOR_POSITON_ONE);
+	setMotorPosition(0,0);
+	setMotorPosition(1,0);
 	// Set the current position of the motors
 	motor_position[0] = 0;
-	motor_position[0] = 0;
+	motor_position[1] = 0;
 	// We don't know where the motor is, so assume worst case scenario and return possible maximum delay 
 	return ONE_POSITION_DELAY * (NUM_MOTOR_POSITIONS);
 }

@@ -71,7 +71,7 @@ void process_SM(struct fsm *state_machine_params) {
                     
             } // end opcode parse
         case STATE_MOVE:
-            state_machine_params->delay = setMotorPosition( state_machine_params->delay, current_argument);
+            state_machine_params->delay = setMotorPosition( state_machine_params->channel, current_argument);
             state_machine_params->current_state = STATE_WAIT;
             break;
         case STATE_WAIT:
