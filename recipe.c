@@ -39,5 +39,7 @@ MOVE | 2,
 WAIT | 30,
 MOVE | 1,
 WAIT | 30,
+MOVE | 0,
+WAIT | 30,
 RECIPE_END
 };

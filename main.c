@@ -48,16 +48,53 @@ void configureSystemTick() {
 	TIM2->CR1 |= TIM_CR1_CEN;
 }
 
-int main(void){
-	char rxByte;
+void parseUserInput(char *string,unsigned int length) {
+    
+    // Invalid command length so do nothing
+    if (length != 2) {
+        return;
+    }
+    // Length must be 2 so this is a valid command to parse
+     
+}
+
+void getLine() {
+    
+    char rxByte;
 	int		n ;
+    char userinput[100];
+    unsigned int index = 0;
+    
+    n = sprintf((char *)buffer, "> ");
+	USART_Write(USART2, buffer, n);
+    index = 0;
+    // Wait until the user enters a carrige return
+    while(1) {
+        // read the user input and echo it back to the screen
+        rxByte = USART_Read(USART2);	
+        if (rxByte == 0xd) {
+					  userinput[index] = '\0';
+            n = sprintf((char *)buffer, "\r\n");
+            USART_Write(USART2, buffer, n);
+            parseUserInput(userinput, index);
+            break;
+        }
+        // echo user character back to the screen
+        n = sprintf((char *)buffer, "%s", &rxByte);
+        USART_Write(USART2, buffer, n);	
+        userinput[index++] = (char)rxByte;
+	}	
+}
+
+int main(void){
+    
 	unsigned int initial_motor_delay; 
 	
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	LED_Init();
 	UART2_Init();   
   
-  initial_motor_delay = motorInit();		
+    initial_motor_delay = motorInit();		
 	
 	// Initalize the two state machine objects
 	init_SM( &motor0_SM, initial_motor_delay, 0, cmd_arr1);
@@ -68,13 +105,6 @@ int main(void){
 	Green_LED_On();
 	
 	while (1){
-		rxByte = USART_Read(USART2);
-		if (rxByte == 0xd) {
-			n = sprintf((char *)buffer, "\r\n");
-			USART_Write(USART2, buffer, n);	
-		} else {
-		n = sprintf((char *)buffer, "%s", &rxByte);
-		USART_Write(USART2, buffer, n);		
-		}
+        getLine();
 	}
 }
