@@ -61,7 +61,7 @@ int main(void){
 	
 	// Initalize the two state machine objects
 	init_SM( &motor0_SM, initial_motor_delay, 0, cmd_arr1);
-	init_SM( &motor1_SM, initial_motor_delay, 1, cmd_arr1);
+	init_SM( &motor1_SM, initial_motor_delay, 1, cmd_arr2);
 	
 	configureSystemTick();
   

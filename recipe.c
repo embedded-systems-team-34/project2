@@ -13,22 +13,31 @@
 #include "recipe.h"
 
 unsigned int cmd_arr1[100] = { 
-MOVE | 0,
 MOVE | 5,
-MOVE | 0,
+MOVE | 4,
 MOVE | 3,
-START_LOOP | 0,
+MOVE | 2,
 MOVE | 1,
-MOVE | 4,
-END_LOOP,
 MOVE | 0,
-MOVE | 2,
-WAIT | 0,
-MOVE | 2,
+START_LOOP | 3,
+MOVE | 5,
 MOVE | 3,
-WAIT | 31,
-WAIT | 31,
-WAIT | 31,
+MOVE | 0,
+END_LOOP,
+WAIT | 30,
+RECIPE_END
+};
+
+unsigned int cmd_arr2[100] = { 
+MOVE | 5,
+WAIT | 30,
 MOVE | 4,
+WAIT | 30,
+MOVE | 3,
+WAIT | 30,
+MOVE | 2,
+WAIT | 30,
+MOVE | 1,
+WAIT | 30,
 RECIPE_END
 };

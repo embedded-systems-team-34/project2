@@ -87,9 +87,11 @@ unsigned int setMotorPosition( unsigned int channel_num, unsigned int commanded_
 	// Write new Duty cycle value for channel 1
 	if (channel_num == 0) {
 		setPWMDuty( 0, MOTOR_POS_ARR[commanded_position]);
+        motor_position[0] = commanded_position;
 	// Write new duty cycle value for channel 2
 	} else {
 		setPWMDuty( 1, MOTOR_POS_ARR[commanded_position]);
+        motor_position[1] = commanded_position;
 	}
 	return position_delta * ONE_POSITION_DELAY;
 }

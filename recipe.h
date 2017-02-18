@@ -23,5 +23,6 @@
 #define RECIPE_END (0)
 
 extern unsigned int cmd_arr1[100];
+extern unsigned int cmd_arr2[100];
 
 #endif

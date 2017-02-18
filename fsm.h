@@ -17,8 +17,8 @@
 
 typedef enum {
     STATE_PARSE,
-    STATE_MOVE,
-    STATE_WAIT
+    STATE_WAIT,
+    STATE_ERROR
 } state_t;
 
 struct fsm {
@@ -27,6 +27,14 @@ struct fsm {
     unsigned int channel;
     unsigned int *instruction_arr;
     unsigned int cmd_index;
+    // Index pointing to the start of a loop 
+    unsigned int loop_start_index;
+    // 0 means we are not currently in a loop
+    // 1 means we are currently in a loop
+    unsigned int inLoopFlag;
+    // Count of number of iterations to loop over
+    unsigned int iterationsLeftToLoop;
+    
 };
 
 // function prototypes
