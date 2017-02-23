@@ -16,6 +16,7 @@
 #define PARAMETER_MASK (0x1F)
 
 // OPCODES
+#define SANDBOX (0xE0)
 #define MOVE (0x20)
 #define WAIT (0x40)
 #define START_LOOP (0x80)
@@ -24,5 +25,7 @@
 
 extern unsigned int cmd_arr1[100];
 extern unsigned int cmd_arr2[100];
+extern unsigned int cmd_arr_sandbox_motor0[100];
+extern unsigned int cmd_arr_sandbox_motor1[100];
 
 #endif

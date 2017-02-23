@@ -40,11 +40,16 @@ struct fsm {
     unsigned int isPaused;
     // Direction to move on an incremental move +1 is right, -1 is left
     int incrementalMoveDirection;
+    // 1 indicates sandbox mode is active
+    // 0 indicates sandbox is not active
+    unsigned int isSandboxMode;
+    unsigned int *sandbox_arr;
+    unsigned int sandbox_cmd_index;
     
 };
 
 // function prototypes
-void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned int *instruction_arr);
+void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned int *instruction_arr, unsigned int *sandbox_arr);
 void process_SM(struct fsm *state_machine_params);
 void parseSerialCommand(struct fsm *state_machine_params, char command);
 

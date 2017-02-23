@@ -85,14 +85,8 @@ unsigned int setMotorPosition( unsigned int channel_num, unsigned int commanded_
 	}
 	
 	// Write new Duty cycle value for channel 1
-	if (channel_num == 0) {
-		setPWMDuty( 0, MOTOR_POS_ARR[commanded_position]);
-        motor_position[0] = commanded_position;
-	// Write new duty cycle value for channel 2
-	} else {
-		setPWMDuty( 1, MOTOR_POS_ARR[commanded_position]);
-        motor_position[1] = commanded_position;
-	}
+    setPWMDuty( channel_num, MOTOR_POS_ARR[commanded_position]);
+    motor_position[channel_num] = commanded_position;
 	return position_delta * ONE_POSITION_DELAY;
 }
 
@@ -126,4 +120,9 @@ unsigned int incrementalMotorMove( unsigned int channel_num, int direction) {
         }
     }
     return delay;
+}
+
+// Return the current motor position given the motor channel
+unsigned int getMotorPosition( unsigned int channel_num ) {
+    return motor_position[channel_num];
 }
