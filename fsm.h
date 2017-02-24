@@ -52,5 +52,7 @@ struct fsm {
 void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int channel, unsigned int *instruction_arr, unsigned int *sandbox_arr);
 void process_SM(struct fsm *state_machine_params);
 void parseSerialCommand(struct fsm *state_machine_params, char command);
+unsigned int isAnInt(char command);
+void printHelp(void);
 
 #endif

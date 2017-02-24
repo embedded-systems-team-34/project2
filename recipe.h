@@ -12,8 +12,14 @@
 #ifndef RECIPE_H
 #define RECIPE_H 
 
+#include "UART.h"
+#include <stdio.h>
+
 #define OPCODE_MASK (0xE0)
 #define PARAMETER_MASK (0x1F)
+#define NUMBER_OF_RECIPES (10)
+#define DESCRIPTION_LENGTH (50)
+
 
 // OPCODES
 #define SANDBOX (0xE0)
@@ -23,9 +29,9 @@
 #define END_LOOP (0xA0)
 #define RECIPE_END (0)
 
-extern unsigned int cmd_arr1[100];
-extern unsigned int cmd_arr2[100];
-extern unsigned int cmd_arr_sandbox_motor0[100];
-extern unsigned int cmd_arr_sandbox_motor1[100];
+extern unsigned int *recipe_arr[10];
+
+void printRecipes(void);
+unsigned int * getRecipeStartAddress(unsigned int recipe_index);
 
 #endif

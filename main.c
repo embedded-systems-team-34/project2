@@ -51,6 +51,8 @@ void configureSystemTick() {
 
 void parseUserInput(char *string,unsigned int length) {
     
+    unsigned int double_help = 0;
+    
     // Invalid command length so do nothing
     if (length != 2) {
         return;
@@ -61,10 +63,20 @@ void parseUserInput(char *string,unsigned int length) {
     string[0] = toupper(string[0]); 
     string[1] = toupper(string[1]);
     
+    // If double help is requested by user only print out a single help message instead of reapeating same message twice
+    if ((string[0] == 'H') && (string[1] == 'H')) {
+        double_help = 1;
+    } else {
+        double_help = 0;
+    }
+    
     // Only process the command if no 'x' are detected
     if ((string[0] != 'X') && (string[1] != 'X')) {
         parseSerialCommand(&motor0_SM, string[0]);
-        parseSerialCommand(&motor1_SM, string[1]);
+        // If Double help prevent displaying help message twice, else process state machine 1
+        if (double_help == 0) {
+            parseSerialCommand(&motor1_SM, string[1]);
+        }
     }
 }
 
@@ -103,16 +115,16 @@ int main(void){
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	LED_Init();
 	UART2_Init();   
-  
+    
+    printHelp();
+    
     initial_motor_delay = motorInit();		
-	
+    
 	// Initalize the two state machine objects
-	init_SM( &motor0_SM, initial_motor_delay, 0, cmd_arr1);
-	init_SM( &motor1_SM, initial_motor_delay, 1, cmd_arr2);
+	init_SM( &motor0_SM, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(2));
+	init_SM( &motor1_SM, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(3));
 	
 	configureSystemTick();
-  
-	Green_LED_On();
 	
 	while (1){
         getLine();

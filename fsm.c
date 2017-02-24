@@ -12,14 +12,51 @@
 
 #include "fsm.h"
 
+char help_text[14][100] = {
+    "**************************************",
+    "Usage: command1command2",
+    "Valid commands are as follows",
+    " ? - print this message",
+    " p - Pause motor recipe execution",
+    " c - Continue motor recipe execution",
+    " r - Move motor right one position",
+    " l - Move motor right one position",
+    " b - Restart the currently executing recipe",
+    " n - no-op do nothing",
+    " h - Print all recipes and there description",
+    " 0-9 - Choose the index of the recipe to execute",
+    " s - Used in sandbox mode to latch in dynamic position commands (specify using L/R)",
+    "**************************************"
+};
+
+// Returns 1 iff the passed in char is 0-9
+unsigned int isAnInt(char command) {
+    if ((command >= 0x30) && (command <= 0x39)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 void parseSerialCommand(struct fsm *state_machine_params, char command) {
     
     unsigned int motorPos = 0;
     unsigned int cmd = 0;
+    unsigned int recipeIndex = 0;
+    unsigned int initial_motor_delay; 
     
-    //Check if the char value is between 30-39
-    //Parse it to an int
-    //Process by switching, putting command value into recipe array
+    // Integer represents a request to switch recipes on the current channel
+    // Check if the char value is between 0x30-0x39 
+    if (isAnInt(command) == 1) {
+        // Command was an int so switch recipes to the passed in command
+        recipeIndex = command & 0xF;
+        // We are hot swapping a recipe here
+        // Tear down current state machine and re-initalize the new state machine with new paramaters
+        // Also need to reset motor position back to init position
+        initial_motor_delay = motorInit();	
+        init_SM(state_machine_params, initial_motor_delay, state_machine_params->channel, getRecipeStartAddress(recipeIndex), state_machine_params->sandbox_arr);
+    }   
+    
     
     // Parse the command - valid commands are as follows:
     // P - pause
@@ -28,7 +65,7 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
     // L - move motor left
     // B - restart
     // N - Do nothing
-    if (command == 'P') {
+    else if (command == 'P') {
         // Tell the state machine we are paused, so finish any queued commands
         // but do not parse any new commands
         state_machine_params->isPaused = 1;
@@ -36,8 +73,9 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
         // Take the state machine out of pause allowing parsing of commands to resume
         state_machine_params->isPaused = 0;
     }     
+    // Print out all avaliable recipes with a brief description
     else if (command == 'H') {
-        //Print all of the recipes
+        printRecipes();
     }   
     // If the user commands to move the motor left or right this will take 
     // priority over recipes. Execution will break out of current command being parsed
@@ -57,17 +95,17 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
     
     // Parse Special Sandbox only commands
     else if (state_machine_params->isSandboxMode == 1) {
-        else if (command == 'S') {
+        if (command == 'S') {
             // User has requested to save the position so read the motor position and write a move command with the current position
-            motorPos = getMotorPosition( state_machine_params->channel)
+            motorPos = getMotorPosition( state_machine_params->channel);
             cmd = MOVE | motorPos;
-            state_machine_params->sandbox_arr[sandbox_cmd_index] = cmd;
+            state_machine_params->sandbox_arr[state_machine_params->sandbox_cmd_index] = cmd;
             state_machine_params->sandbox_cmd_index += 1;
             
         } else if (command == 'Q') {
             // Add a RECIPE_END command when user indicates done
             cmd = RECIPE_END;
-            state_machine_params->sandbox_arr[sandbox_cmd_index] = cmd;
+            state_machine_params->sandbox_arr[state_machine_params->sandbox_cmd_index] = cmd;
             // Reset the sandbox command index so next time recipe is executed pointer into sandbox array will be a first element
             state_machine_params->sandbox_cmd_index = 0;
             
@@ -76,11 +114,12 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
             state_machine_params->cmd_index += 1;
             
         }
-    }
-    
-    // Invalid command or a no-op so do nothing 
+    }     
+    // no-op so do nothing
+    else if (command == 'N'); 
+    // Invalid command so print help
     else {
-        
+        printHelp();
     }
 }
 
@@ -206,4 +245,17 @@ void process_SM(struct fsm *state_machine_params) {
             state_machine_params->current_state = STATE_ERROR;
             break;
     } // end switch
+}
+
+// Prints a help message documenting the commands for the user
+void printHelp() {
+	int		n ;
+    unsigned int i = 0;
+    uint8_t buffer[100];
+    
+    for (i = 0; i < 14; i++) {
+        n = sprintf((char *)buffer, "%s\r\n", help_text[i]);
+        USART_Write(USART2, buffer, n);	
+    }
+    
 }
