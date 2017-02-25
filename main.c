@@ -121,8 +121,9 @@ int main(void){
     initial_motor_delay = motorInit();		
     
 	// Initalize the two state machine objects
-	init_SM( &motor0_SM, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(2));
-	init_SM( &motor1_SM, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(3));
+    #warning MAKE SURE THE SANDBOX RECIPE IS CORRECT HERE -> OTHERWISE IN SANDBOX MODE WONT WRITE TO CORRECT RECIPE
+	init_SM( &motor0_SM, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(3));
+	init_SM( &motor1_SM, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(4));
 	
 	configureSystemTick();
 	

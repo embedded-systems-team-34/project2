@@ -12,7 +12,7 @@
 
 #include "fsm.h"
 
-char help_text[14][100] = {
+char help_text[15][100] = {
     "**************************************",
     "Usage: command1command2",
     "Valid commands are as follows",
@@ -26,6 +26,7 @@ char help_text[14][100] = {
     " h - Print all recipes and there description",
     " 0-9 - Choose the index of the recipe to execute",
     " s - Used in sandbox mode to latch in dynamic position commands (specify using L/R)",
+    " q - End command entry when in sandbox mode",
     "**************************************"
 };
 
@@ -112,6 +113,7 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
             // break out of sandbox, move onto the next opcode
             // This is incrementing the counter in the CURRENT recipe, NOT the sandbox reciepe
             state_machine_params->cmd_index += 1;
+            state_machine_params->isSandboxMode = 0;
             
         }
     }     
@@ -162,6 +164,7 @@ void process_SM(struct fsm *state_machine_params) {
                 // Parse the opcode and decide what to do!!
                 switch(current_opcode) {
                     case(SANDBOX):
+                        state_machine_params->isSandboxMode = 1;
                         state_machine_params->current_state = STATE_PARSE;
                         break;
                     
@@ -232,12 +235,14 @@ void process_SM(struct fsm *state_machine_params) {
             break;
         
         case STATE_WAIT:
-            // Decrement the delay by 100 ms
-            state_machine_params->delay -= 1;
             // If we are done waiting then go parse the next command
             if (state_machine_params->delay == 0) {
                 state_machine_params->current_state = STATE_PARSE;
+            } else {
+                // Decrement the delay by 100 ms
+                state_machine_params->delay -= 1;
             }
+            
             break;
         case STATE_ERROR:
         default:
@@ -253,7 +258,7 @@ void printHelp() {
     unsigned int i = 0;
     uint8_t buffer[100];
     
-    for (i = 0; i < 14; i++) {
+    for (i = 0; i < 15; i++) {
         n = sprintf((char *)buffer, "%s\r\n", help_text[i]);
         USART_Write(USART2, buffer, n);	
     }

@@ -44,25 +44,94 @@ WAIT | 30,
 RECIPE_END
 };
 
+unsigned int cmd_sandbox_creation_motor0[100] = {
+MOVE | 5,
+WAIT | 30,
+MOVE | 4,
+WAIT | 30,
+MOVE | 3,
+WAIT | 30,
+MOVE | 2,
+WAIT | 30,
+MOVE | 1,
+SANDBOX,
+MOVE | 5,
+RECIPE_END
+};
+
+unsigned int cmd_pyramid[100] = {
+START_LOOP | 3,
+MOVE | 5,
+MOVE | 4,
+MOVE | 5,
+MOVE | 3,
+MOVE | 5,
+MOVE | 2,
+MOVE | 5,
+MOVE | 1,
+MOVE | 5,
+MOVE | 0,
+MOVE | 5,
+MOVE | 0,
+MOVE | 1,
+MOVE | 0,
+MOVE | 2,
+MOVE | 0,
+MOVE | 3,
+MOVE | 0,
+MOVE | 4,
+MOVE | 0,
+MOVE | 5,
+END_LOOP,
+WAIT | 1,
+RECIPE_END
+};
+
+unsigned int cmd_provided[100] = {
+MOVE | 0,
+MOVE | 5,
+MOVE | 0,
+MOVE | 3,
+START_LOOP | 0,
+MOVE | 1,
+MOVE | 4,
+END_LOOP,
+MOVE | 0,
+MOVE | 2,
+WAIT | 0,
+MOVE | 3,
+WAIT | 0,
+MOVE | 2,
+MOVE | 3,
+WAIT | 31,
+WAIT | 31,
+WAIT | 31,
+MOVE | 4,
+RECIPE_END      
+};
+
 unsigned int cmd_arr_sandbox_motor0[100] = {0};
 unsigned int cmd_arr_sandbox_motor1[100] = {0};
 unsigned int *recipe_arr[NUMBER_OF_RECIPES] = {
     cmd_arr1, 
     cmd_arr2, 
+    cmd_sandbox_creation_motor0,
     cmd_arr_sandbox_motor0, 
-    cmd_arr_sandbox_motor1}; 
+    cmd_arr_sandbox_motor1,
+    cmd_pyramid,
+    cmd_provided}; 
 
 char recipes_description[NUMBER_OF_RECIPES][DESCRIPTION_LENGTH] = {
     "0 - ENTER DESCRIPTION HERE",
     "1 - ENTER DESCRIPTION HERE",
-    "2 - Sandbox Recipe Motor 0",
+    "2 - Sandbox Creation Recipe",
     "3 - Sandbox Recipe Motor 1",
-    "NOT CURRENTLY USED",
-    "NOT CURRENTLY USED",
-    "NOT CURRENTLY USED",
-    "NOT CURRENTLY USED",
-    "NOT CURRENTLY USED",
-    "NOT CURRENTLY USED"
+    "4 - Sandbox Recipe Motor 2",
+    "5 - Pyramids",
+    "6 - Provided Recipe (9.3 second wait)",
+    "7 - NOT CURRENTLY USED",
+    "8 - NOT CURRENTLY USED",
+    "9 - NOT CURRENTLY USED"
 };
 
 void printRecipes() {

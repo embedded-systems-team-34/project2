@@ -16,12 +16,12 @@
 #define NUM_MOTOR_POSITIONS (6)
 
 // Motor duty cycle has resolution of 1 us
-#define MOTOR_POSITON_ZERO (399)
+#define MOTOR_POSITON_ZERO (570)
 #define MOTOR_POSITON_ONE (719)
 #define MOTOR_POSITON_TWO (1039)
 #define MOTOR_POSITON_THREE (1359)
 #define MOTOR_POSITON_FOUR (1679)
-#define MOTOR_POSITON_FIVE (1999)
+#define MOTOR_POSITON_FIVE (1969)
 
 // delay for the motor to change one position in increments of 100 ms
 #define ONE_POSITION_DELAY (2)
