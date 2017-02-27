@@ -16,7 +16,7 @@
 #define NUM_MOTOR_POSITIONS (6)
 
 // Motor duty cycle has resolution of 1 us
-#define MOTOR_POSITON_ZERO (570)
+#define MOTOR_POSITON_ZERO (490)
 #define MOTOR_POSITON_ONE (719)
 #define MOTOR_POSITON_TWO (1039)
 #define MOTOR_POSITON_THREE (1359)

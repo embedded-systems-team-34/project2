@@ -110,6 +110,40 @@ MOVE | 4,
 RECIPE_END      
 };
 
+unsigned int cmd_loop_err[100] = {
+MOVE | 0,
+MOVE | 1,
+MOVE | 2,
+MOVE | 3,
+START_LOOP,
+MOVE | 5,
+MOVE | 3,
+START_LOOP,
+MOVE | 4,
+END_LOOP,
+END_LOOP,
+MOVE | 5,
+RECIPE_END      
+};
+
+unsigned int cmd_invalid_op[100] = {
+MOVE | 0,
+MOVE | 1,
+MOVE | 2,
+MOVE | 3,
+0x60,
+RECIPE_END      
+};
+
+unsigned int cmd_invalid_param[100] = {
+MOVE | 0,
+MOVE | 1,
+MOVE | 2,
+MOVE | 3,
+MOVE | 10,
+RECIPE_END      
+};
+
 unsigned int cmd_arr_sandbox_motor0[100] = {0};
 unsigned int cmd_arr_sandbox_motor1[100] = {0};
 unsigned int *recipe_arr[NUMBER_OF_RECIPES] = {
@@ -119,19 +153,22 @@ unsigned int *recipe_arr[NUMBER_OF_RECIPES] = {
     cmd_arr_sandbox_motor0, 
     cmd_arr_sandbox_motor1,
     cmd_pyramid,
-    cmd_provided}; 
+    cmd_provided,
+    cmd_loop_err,
+    cmd_invalid_op,
+    cmd_invalid_param}; 
 
 char recipes_description[NUMBER_OF_RECIPES][DESCRIPTION_LENGTH] = {
-    "0 - ENTER DESCRIPTION HERE",
-    "1 - ENTER DESCRIPTION HERE",
-    "2 - Sandbox Creation Recipe",
-    "3 - Sandbox Recipe Motor 1",
-    "4 - Sandbox Recipe Motor 2",
+    "0 - Test Recipe 1",
+    "1 - Test Recipe 2",
+    "2 - Recipe plus sandbox Creation Recipe",
+    "3 - Sandbox Recipe Motor 1 - DO NOT REMOVE",
+    "4 - Sandbox Recipe Motor 2- DO NOT REMOVE",
     "5 - Pyramids",
     "6 - Provided Recipe (9.3 second wait)",
-    "7 - NOT CURRENTLY USED",
-    "8 - NOT CURRENTLY USED",
-    "9 - NOT CURRENTLY USED"
+    "7 - Nested Loop Error",
+    "8 - Invalid OP-code",
+    "9 - Invalid Move Paramater"
 };
 
 void printRecipes() {

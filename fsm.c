@@ -169,9 +169,14 @@ void process_SM(struct fsm *state_machine_params) {
                         break;
                     
                     case (MOVE):
-                        state_machine_params->delay = setMotorPosition( state_machine_params->channel, current_argument);
-                        state_machine_params->current_state = STATE_WAIT;
-                        state_machine_params->cmd_index += 1;
+                        // Invalid paramater for move
+                        if (current_argument > 5) {
+                            state_machine_params->current_state = STATE_ERROR;
+                        } else {
+                            state_machine_params->delay = setMotorPosition( state_machine_params->channel, current_argument);
+                            state_machine_params->current_state = STATE_WAIT;
+                            state_machine_params->cmd_index += 1;
+                        }
                         break;
                     case (WAIT):
                         // Don't go to wait for a wait of 0 just increment to the next command in the recipe
@@ -187,6 +192,7 @@ void process_SM(struct fsm *state_machine_params) {
                         // If we are aleady in a loop and attempt to process another that is a nested loop go to error state
                         if (state_machine_params->inLoopFlag == 1) {
                             state_machine_params->current_state = STATE_ERROR;
+                            break;
                         }
                         // set in loop flag to indicate that we are in a loop
                         state_machine_params->inLoopFlag = 1;
@@ -236,7 +242,7 @@ void process_SM(struct fsm *state_machine_params) {
         
         case STATE_WAIT:
             // If we are done waiting then go parse the next command
-            if (state_machine_params->delay == 0) {
+            if (state_machine_params->delay  <=  1) {
                 state_machine_params->current_state = STATE_PARSE;
             } else {
                 // Decrement the delay by 100 ms
