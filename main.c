@@ -10,8 +10,8 @@
 #include <ctype.h>
 
 uint8_t buffer[BufferSize];
-struct fsm motor0_SM;
-struct fsm motor1_SM;
+struct fsm motor0_sm;
+struct fsm motor1_sm;
 
 
 void TIM2_IRQHandler(void) {
@@ -19,8 +19,8 @@ void TIM2_IRQHandler(void) {
 
     // Check for overflow interrupt
     if (((which_interrupt & TIM_SR_UIF) == TIM_SR_UIF)) {
-		 process_SM(&motor0_SM);
-		 process_SM(&motor1_SM);
+		 process_SM(&motor0_sm);
+		 process_SM(&motor1_sm);
      TIM2->SR &= ~TIM_SR_UIF; // Clear overflow interrupt
     }
 }
@@ -70,10 +70,10 @@ void parseUserInput(char *string,unsigned int length) {
     
     // Only process the command if no 'x' are detected
     if ((string[0] != 'X') && (string[1] != 'X')) {
-        parseSerialCommand(&motor0_SM, string[0]);
+        parseSerialCommand(&motor0_sm, string[0]);
         // If Double help prevent displaying help message twice, else process state machine 1
         if (double_help == 0) {
-            parseSerialCommand(&motor1_SM, string[1]);
+            parseSerialCommand(&motor1_sm, string[1]);
         }
     }
 }
@@ -119,8 +119,8 @@ int main(void){
     initial_motor_delay = motorInit();		
     
 	// Initalize the two state machine objects
-	init_SM( &motor0_SM, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(3));
-	init_SM( &motor1_SM, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(4));
+	init_SM( &motor0_sm, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(3));
+	init_SM( &motor1_sm, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(4));
 	
 	configureSystemTick();
 	

@@ -41,21 +41,21 @@ unsigned int isAnInt(char command) {
 
 void parseSerialCommand(struct fsm *state_machine_params, char command) {
     
-    unsigned int motorPos = 0;
+    unsigned int motor_pos = 0;
     unsigned int cmd = 0;
-    unsigned int recipeIndex = 0;
+    unsigned int recipe_index = 0;
     unsigned int initial_motor_delay; 
     
     // Integer represents a request to switch recipes on the current channel
     // Check if the char value is between 0x30-0x39 
     if (isAnInt(command) == 1) {
         // Command was an int so switch recipes to the passed in command
-        recipeIndex = command & 0xF;
+        recipe_index = command & 0xF;
         // We are hot swapping a recipe here
         // Tear down current state machine and re-initalize the new state machine with new paramaters
         // Also need to reset motor position back to init position
         initial_motor_delay = motorInit();	
-        init_SM(state_machine_params, initial_motor_delay, state_machine_params->channel, getRecipeStartAddress(recipeIndex), state_machine_params->sandbox_arr);
+        init_SM(state_machine_params, initial_motor_delay, state_machine_params->channel, getRecipeStartAddress(recipe_index), state_machine_params->sandbox_arr);
     }   
     
     
@@ -69,12 +69,12 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
     else if (command == 'P') {
         // Tell the state machine we are paused, so finish any queued commands
         // but do not parse any new commands
-        state_machine_params->isPaused = 1;
+        state_machine_params->is_paused = 1;
         state_machine_params->program_status = PAUSED;
     } else if (command == 'C') {
         // Take the state machine out of pause allowing parsing of commands to resume
         state_machine_params->program_status = RUNNING;
-        state_machine_params->isPaused = 0;
+        state_machine_params->is_paused = 0;
     }     
     // Print out all avaliable recipes with a brief description
     else if (command == 'H') {
@@ -94,15 +94,15 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
         // taking the state machine out of pause
         state_machine_params->program_status = RUNNING;
         state_machine_params->cmd_index = 0;
-        state_machine_params->isPaused = 0;
+        state_machine_params->is_paused = 0;
     } 
     
     // Parse Special Sandbox only commands
-    else if (state_machine_params->isSandboxMode == 1) {
+    else if (state_machine_params->is_sandbox_mode == 1) {
         if (command == 'S') {
             // User has requested to save the position so read the motor position and write a move command with the current position
-            motorPos = getMotorPosition( state_machine_params->channel);
-            cmd = MOVE | motorPos;
+            motor_pos = get_motor_position( state_machine_params->channel);
+            cmd = MOVE | motor_pos;
             state_machine_params->sandbox_arr[state_machine_params->sandbox_cmd_index] = cmd;
             state_machine_params->sandbox_cmd_index += 1;
             
@@ -116,7 +116,7 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
             // break out of sandbox, move onto the next opcode
             // This is incrementing the counter in the CURRENT recipe, NOT the sandbox reciepe
             state_machine_params->cmd_index += 1;
-            state_machine_params->isSandboxMode = 0;
+            state_machine_params->is_sandbox_mode = 0;
             
         }
     }     
@@ -134,15 +134,23 @@ void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int
     state_machine_params->delay = delay;
     state_machine_params->channel = channel;
     state_machine_params->instruction_arr = instruction_arr;
+    
+    //Start at the beginning of opcodes
+    //cmd_index keeps track of current opcode index
     state_machine_params->cmd_index = 0;
     state_machine_params->loop_start_index = 0;
-    state_machine_params->inLoopFlag = 0;
-    state_machine_params->iterationsLeftToLoop = 0;
+    state_machine_params->in_loop_flag = 0;
+    state_machine_params->remaining_loop_interations = 0;
+    
     // Pause the recipe on startup
-    state_machine_params->isPaused = 1;
-    state_machine_params->isSandboxMode = 0;
+    state_machine_params->is_paused = 1;
+    
+    //Won't be sandbox mode until that opcode is detected
+    state_machine_params->is_sandbox_mode = 0;
     state_machine_params->sandbox_arr = sandbox_arr;
     state_machine_params->sandbox_cmd_index = 0;
+    
+    //LED Status variables
     state_machine_params->ms_count = 0;
     state_machine_params->second_count = 0;
     state_machine_params->program_status = PAUSED;
@@ -151,14 +159,14 @@ void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int
 
 void process_SM(struct fsm *state_machine_params) {
     
-    unsigned int  current_opcode = 0;
+    unsigned int current_opcode = 0;
     unsigned int current_argument = 0;
     
     switch(state_machine_params->current_state) {
         case STATE_PARSE:
             
             // Do not parse the current command unless we are not paused
-            if (state_machine_params->isPaused == 0) {
+            if (state_machine_params->is_paused == 0) {
             
                 // Get the current opcode
                 current_opcode = state_machine_params->instruction_arr[state_machine_params->cmd_index];
@@ -170,7 +178,7 @@ void process_SM(struct fsm *state_machine_params) {
                 // Parse the opcode and decide what to do!!
                 switch(current_opcode) {
                     case(SANDBOX):
-                        state_machine_params->isSandboxMode = 1;
+                        state_machine_params->is_sandbox_mode = 1;
                         state_machine_params->current_state = STATE_PARSE;
                         break;
                     
@@ -180,13 +188,13 @@ void process_SM(struct fsm *state_machine_params) {
                             state_machine_params->program_status = COMMAND_ERROR;
                             state_machine_params->current_state = STATE_ERROR;
                         } else {
-                            state_machine_params->delay = setMotorPosition( state_machine_params->channel, current_argument);
+                            state_machine_params->delay = set_motor_position( state_machine_params->channel, current_argument);
                             state_machine_params->current_state = STATE_WAIT;
                             state_machine_params->cmd_index += 1;
                         }
                         break;
                     case (WAIT):
-                        // Don't go to wait for a wait of 0 just increment to the next command in the recipe
+                        // Don't go to wait for a wait of 0, just increment to the next command in the recipe
                         if (current_argument == 0) {
                             state_machine_params->cmd_index += 1;
                         } else {
@@ -197,17 +205,17 @@ void process_SM(struct fsm *state_machine_params) {
                         break;
                     case (START_LOOP):
                         // If we are aleady in a loop and attempt to process another that is a nested loop go to error state
-                        if (state_machine_params->inLoopFlag == 1) {
+                        if (state_machine_params->in_loop_flag == 1) {
                             state_machine_params->program_status = LOOP_ERROR;
                             state_machine_params->current_state = STATE_ERROR;
                             break;
                         }
                         // set in loop flag to indicate that we are in a loop
-                        state_machine_params->inLoopFlag = 1;
+                        state_machine_params->in_loop_flag = 1;
                         // Current index is a start loop command -> therefore the first instruction of the loop is located at current instruction + 1
                         state_machine_params->loop_start_index = (state_machine_params->cmd_index) + 1;
                         // Set the number of iterations to remain in this loop
-                        state_machine_params->iterationsLeftToLoop = current_argument;
+                        state_machine_params->remaining_loop_interations = current_argument;
                         
                         // We are now all setup to loop, increment to the next command and start executing loop body
                         state_machine_params->cmd_index += 1;
@@ -217,17 +225,17 @@ void process_SM(struct fsm *state_machine_params) {
                         // Have reached the end of the loop body 
                         
                         // If the loop is done executing 
-                        if (state_machine_params->iterationsLeftToLoop == 0) {
+                        if (state_machine_params->remaining_loop_interations == 0) {
                             state_machine_params->current_state = STATE_PARSE;
                             state_machine_params->cmd_index += 1;
-                            state_machine_params->inLoopFlag = 0;
+                            state_machine_params->in_loop_flag = 0;
                         }
                         // else the loop is not done executing so keep on looping
                         else {
                             // decrement the number of times left to loop
                             // It may seem strange to decrement here and not before checking but requirements specifically state
                             // that loops are executed once plus n more times, so checking here allows for this behavior
-                            state_machine_params->iterationsLeftToLoop -= 1;
+                            state_machine_params->remaining_loop_interations -= 1;
                             state_machine_params->current_state = STATE_PARSE;
                             state_machine_params->cmd_index = state_machine_params->loop_start_index;
                         }
@@ -288,26 +296,33 @@ void updateStatus(struct fsm *state_machine_params) {
     
     state_machine_params->ms_count ^= 1;
     
-    // Channel 0 uses LED Red
+    // Channel 0 uses LED Red, Channel 1 uses LED Green
     switch (state_machine_params->program_status) {
+        //If the recipe is running, the LED is on
         case RUNNING:
-            // If channel 0 update red LED, else update on green 
+            // If channel 0 update red LED, else update green 
             (state_machine_params->channel == 0) ? Red_LED_On() : Green_LED_On();
             break;
+        //If the recipe is not running, the LED is off
         case PAUSED:
-            // If channel 0 update red LED, else update on green 
+            // If channel 0 update red LED, else update green 
             (state_machine_params->channel == 0) ? Red_LED_Off() : Green_LED_Off();
             break;
+        //If there's a loop error, blink the LED in 100ms intervals
         case LOOP_ERROR:
             if (state_machine_params->ms_count == 1) {
+                // If channel 0 update red LED, else update green 
                 (state_machine_params->channel == 0) ? Red_LED_On() : Green_LED_On();
             } else {
+                // If channel 0 update red LED, else update on green 
                 (state_machine_params->channel == 0) ? Red_LED_Off() : Green_LED_Off();
             }
             break;
+        //If there's an invalid opcode error, blink the LED in 1s intervals
         case COMMAND_ERROR:
             state_machine_params->second_count += 1;
             if (state_machine_params->second_count == 10) {
+                // If channel 0 update red LED, else update on green 
                 (state_machine_params->channel == 0) ? Red_LED_Toggle() : Green_LED_Toggle();
                 state_machine_params->second_count = 0;
             }

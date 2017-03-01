@@ -64,8 +64,8 @@ unsigned int motorInit() {
 	  pwmInit();
 	
 	// Command a known position from motors on startup
-	setMotorPosition(0,0);
-	setMotorPosition(1,0);
+	set_motor_position(0,0);
+	set_motor_position(1,0);
 	// Set the current position of the motors
 	motor_position[0] = 0;
 	motor_position[1] = 0;
@@ -75,7 +75,7 @@ unsigned int motorInit() {
 
 // return - the duration of delay to allow motor to reach requested position
 // Value returned is a count of 100 ms to wait e.g. 2 corresponds to 200 ms, 3 to 300 ms etc.
-unsigned int setMotorPosition( unsigned int channel_num, unsigned int commanded_position) {
+unsigned int set_motor_position( unsigned int channel_num, unsigned int commanded_position) {
 	unsigned int position_delta;
 	
 	if (commanded_position >= motor_position[channel_num]) {
@@ -101,28 +101,28 @@ unsigned int incrementalMotorMove( unsigned int channel_num, int direction) {
     if (channel_num == 0) {
         // Move right iff not at full right position
         if ((direction == 1) && (motor_position[0] != 5)) {
-            delay = setMotorPosition(0, motor_position[0] + 1);
+            delay = set_motor_position(0, motor_position[0] + 1);
         } 
         // move left iff not at full left position
         else if ((direction == -1) && (motor_position[0] != 0)) {
-            delay = setMotorPosition(0, motor_position[0] - 1);
+            delay = set_motor_position(0, motor_position[0] - 1);
         }
     }
     // Handle channel 2
     else {
         // Move right iff not at full right position
         if ((direction == 1) && (motor_position[1] != 5)) {
-            delay = setMotorPosition(1, motor_position[1] + 1);
+            delay = set_motor_position(1, motor_position[1] + 1);
         } 
         // move left iff not at full left position
         else if ((direction == -1) && (motor_position[1] != 0)) {
-            delay = setMotorPosition(1, motor_position[1] - 1);
+            delay = set_motor_position(1, motor_position[1] - 1);
         }
     }
     return delay;
 }
 
 // Return the current motor position given the motor channel
-unsigned int getMotorPosition( unsigned int channel_num ) {
+unsigned int get_motor_position( unsigned int channel_num ) {
     return motor_position[channel_num];
 }

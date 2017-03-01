@@ -40,17 +40,17 @@ struct fsm {
     unsigned int loop_start_index;
     // 0 means we are not currently in a loop
     // 1 means we are currently in a loop
-    unsigned int inLoopFlag;
+    unsigned int in_loop_flag;
     // Count of number of iterations to loop over
-    unsigned int iterationsLeftToLoop;
+    unsigned int remaining_loop_interations;
     // 1 means that recipe execution is paused
     // 0 means that recipe execution is live (not paused)
-    unsigned int isPaused;
+    unsigned int is_paused;
     // Direction to move on an incremental move +1 is right, -1 is left
     int incrementalMoveDirection;
     // 1 indicates sandbox mode is active
     // 0 indicates sandbox is not active
-    unsigned int isSandboxMode;
+    unsigned int is_sandbox_mode;
     unsigned int *sandbox_arr;
     unsigned int sandbox_cmd_index;
     

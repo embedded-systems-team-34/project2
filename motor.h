@@ -15,8 +15,8 @@
 
 // Function Prototypes
 unsigned int motorInit(void);
-unsigned int setMotorPosition( unsigned int channel_num, unsigned int position);
+unsigned int set_motor_position( unsigned int channel_num, unsigned int position);
 unsigned int incrementalMotorMove( unsigned int channel_num, int direction);
-unsigned int getMotorPosition( unsigned int channel_num );
+unsigned int get_motor_position( unsigned int channel_num );
 
 #endif
