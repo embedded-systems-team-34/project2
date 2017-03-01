@@ -177,6 +177,7 @@ void process_SM(struct fsm *state_machine_params) {
                     case (MOVE):
                         // Invalid paramater for move
                         if (current_argument > 5) {
+                            state_machine_params->program_status = COMMAND_ERROR;
                             state_machine_params->current_state = STATE_ERROR;
                         } else {
                             state_machine_params->delay = setMotorPosition( state_machine_params->channel, current_argument);
@@ -288,53 +289,29 @@ void updateStatus(struct fsm *state_machine_params) {
     state_machine_params->ms_count ^= 1;
     
     // Channel 0 uses LED Red
-    if (state_machine_params->channel == 0) {
-        switch (state_machine_params->program_status) {
-            case RUNNING:
-                Red_LED_On();
-                break;
-            case PAUSED:
-                Red_LED_Off();
-                break;
-            case LOOP_ERROR:
-                if (state_machine_params->ms_count == 1) {
-                    Red_LED_On();
-                } else {
-                    Red_LED_Off();
-                }
-                break;
-            case COMMAND_ERROR:
-                state_machine_params->second_count += 1;
-                if (state_machine_params->second_count == 10) {
-                    Red_LED_Toggle();
-                    state_machine_params->second_count = 0;
-                }
-                break;
-            default:;
-        }   
-    } else {
-        switch (state_machine_params->program_status) {
-            case RUNNING:
-                Green_LED_On();
-                break;
-            case PAUSED:
-                Green_LED_Off();
-                break;
-            case LOOP_ERROR:
-                if (state_machine_params->ms_count == 1) {
-                    Green_LED_On();
-                } else {
-                    Green_LED_Off();
-                }
-                break;
-            case COMMAND_ERROR:
-                state_machine_params->second_count += 1;
-                if (state_machine_params->second_count == 10) {
-                    Green_LED_Toggle();
-                    state_machine_params->second_count = 0;
-                }
-                break;
-            default:;
-        }
-    }
+    switch (state_machine_params->program_status) {
+        case RUNNING:
+            // If channel 0 update red LED, else update on green 
+            (state_machine_params->channel == 0) ? Red_LED_On() : Green_LED_On();
+            break;
+        case PAUSED:
+            // If channel 0 update red LED, else update on green 
+            (state_machine_params->channel == 0) ? Red_LED_Off() : Green_LED_Off();
+            break;
+        case LOOP_ERROR:
+            if (state_machine_params->ms_count == 1) {
+                (state_machine_params->channel == 0) ? Red_LED_On() : Green_LED_On();
+            } else {
+                (state_machine_params->channel == 0) ? Red_LED_Off() : Green_LED_Off();
+            }
+            break;
+        case COMMAND_ERROR:
+            state_machine_params->second_count += 1;
+            if (state_machine_params->second_count == 10) {
+                (state_machine_params->channel == 0) ? Red_LED_Toggle() : Green_LED_Toggle();
+                state_machine_params->second_count = 0;
+            }
+            break;
+        default:;
+    }   
 }
