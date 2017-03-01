@@ -14,6 +14,7 @@
 
 #include "motor.h"
 #include "recipe.h"
+#include "LED.h"
 
 typedef enum {
     STATE_PARSE,
@@ -21,6 +22,13 @@ typedef enum {
     STATE_INCREMENTAL_MOVE,
     STATE_ERROR
 } state_t;
+
+typedef enum {
+    RUNNING,
+    PAUSED,
+    LOOP_ERROR,
+    COMMAND_ERROR
+} program_status_t;
 
 struct fsm {
     state_t current_state;
@@ -46,6 +54,11 @@ struct fsm {
     unsigned int *sandbox_arr;
     unsigned int sandbox_cmd_index;
     
+    // LED status paramaters
+    unsigned int ms_count;
+    unsigned int second_count;
+    program_status_t program_status;
+    
 };
 
 // function prototypes
@@ -54,5 +67,6 @@ void process_SM(struct fsm *state_machine_params);
 void parseSerialCommand(struct fsm *state_machine_params, char command);
 unsigned int isAnInt(char command);
 void printHelp(void);
+void updateStatus(struct fsm *state_machine_params);
 
 #endif

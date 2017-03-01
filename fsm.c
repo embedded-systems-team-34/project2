@@ -70,8 +70,10 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
         // Tell the state machine we are paused, so finish any queued commands
         // but do not parse any new commands
         state_machine_params->isPaused = 1;
+        state_machine_params->program_status = PAUSED;
     } else if (command == 'C') {
         // Take the state machine out of pause allowing parsing of commands to resume
+        state_machine_params->program_status = RUNNING;
         state_machine_params->isPaused = 0;
     }     
     // Print out all avaliable recipes with a brief description
@@ -90,6 +92,7 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
     } else if (command == 'B') {
         // This opcode not only restarts a recipe but also begins execution immediately 
         // taking the state machine out of pause
+        state_machine_params->program_status = RUNNING;
         state_machine_params->cmd_index = 0;
         state_machine_params->isPaused = 0;
     } 
@@ -140,6 +143,9 @@ void init_SM( struct fsm *state_machine_params, unsigned int delay, unsigned int
     state_machine_params->isSandboxMode = 0;
     state_machine_params->sandbox_arr = sandbox_arr;
     state_machine_params->sandbox_cmd_index = 0;
+    state_machine_params->ms_count = 0;
+    state_machine_params->second_count = 0;
+    state_machine_params->program_status = PAUSED;
     
 }
 
@@ -191,6 +197,7 @@ void process_SM(struct fsm *state_machine_params) {
                     case (START_LOOP):
                         // If we are aleady in a loop and attempt to process another that is a nested loop go to error state
                         if (state_machine_params->inLoopFlag == 1) {
+                            state_machine_params->program_status = LOOP_ERROR;
                             state_machine_params->current_state = STATE_ERROR;
                             break;
                         }
@@ -226,10 +233,12 @@ void process_SM(struct fsm *state_machine_params) {
                         break;
                     case (RECIPE_END):
                         // Don't need to do anything here, the recipe is over so just remain here
+                        state_machine_params->program_status = PAUSED;
                         state_machine_params->current_state = STATE_PARSE;
                         break;
                     // Invalid opcode
                     default:
+                        state_machine_params->program_status = COMMAND_ERROR;
                         state_machine_params->current_state = STATE_ERROR;
                 } // end opcode parse
             }
@@ -256,6 +265,8 @@ void process_SM(struct fsm *state_machine_params) {
             state_machine_params->current_state = STATE_ERROR;
             break;
     } // end switch
+    
+    updateStatus(state_machine_params);
 }
 
 // Prints a help message documenting the commands for the user
@@ -269,4 +280,61 @@ void printHelp() {
         USART_Write(USART2, buffer, n);	
     }
     
+}
+
+// Update the LED status
+void updateStatus(struct fsm *state_machine_params) {
+    
+    state_machine_params->ms_count ^= 1;
+    
+    // Channel 0 uses LED Red
+    if (state_machine_params->channel == 0) {
+        switch (state_machine_params->program_status) {
+            case RUNNING:
+                Red_LED_On();
+                break;
+            case PAUSED:
+                Red_LED_Off();
+                break;
+            case LOOP_ERROR:
+                if (state_machine_params->ms_count == 1) {
+                    Red_LED_On();
+                } else {
+                    Red_LED_Off();
+                }
+                break;
+            case COMMAND_ERROR:
+                state_machine_params->second_count += 1;
+                if (state_machine_params->second_count == 10) {
+                    Red_LED_Toggle();
+                    state_machine_params->second_count = 0;
+                }
+                break;
+            default:;
+        }   
+    } else {
+        switch (state_machine_params->program_status) {
+            case RUNNING:
+                Green_LED_On();
+                break;
+            case PAUSED:
+                Green_LED_Off();
+                break;
+            case LOOP_ERROR:
+                if (state_machine_params->ms_count == 1) {
+                    Green_LED_On();
+                } else {
+                    Green_LED_Off();
+                }
+                break;
+            case COMMAND_ERROR:
+                state_machine_params->second_count += 1;
+                if (state_machine_params->second_count == 10) {
+                    Green_LED_Toggle();
+                    state_machine_params->second_count = 0;
+                }
+                break;
+            default:;
+        }
+    }
 }

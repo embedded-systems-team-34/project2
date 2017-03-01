@@ -19,8 +19,6 @@ void TIM2_IRQHandler(void) {
 
     // Check for overflow interrupt
     if (((which_interrupt & TIM_SR_UIF) == TIM_SR_UIF)) {
-     Red_LED_Toggle();
-		 Green_LED_Toggle();
 		 process_SM(&motor0_SM);
 		 process_SM(&motor1_SM);
      TIM2->SR &= ~TIM_SR_UIF; // Clear overflow interrupt
