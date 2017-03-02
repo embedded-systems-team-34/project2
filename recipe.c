@@ -13,139 +13,141 @@
 #include "recipe.h"
 
 unsigned int cmd_arr1[100] = { 
-MOVE | 5,
-MOVE | 4,
-MOVE | 3,
-MOVE | 2,
-MOVE | 1,
-MOVE | 0,
-START_LOOP | 3,
-MOVE | 5,
-MOVE | 3,
-MOVE | 0,
-END_LOOP,
-WAIT | 30,
-RECIPE_END
+    MOVE | 5,
+    MOVE | 4,
+    MOVE | 3,
+    MOVE | 2,
+    MOVE | 1,
+    MOVE | 0,
+    START_LOOP | 3,
+    MOVE | 5,
+    MOVE | 3,
+    MOVE | 0,
+    END_LOOP,
+    WAIT | 30,
+    RECIPE_END
 };
 
 unsigned int cmd_arr2[100] = { 
-MOVE | 5,
-WAIT | 30,
-MOVE | 4,
-WAIT | 30,
-MOVE | 3,
-WAIT | 30,
-MOVE | 2,
-WAIT | 30,
-MOVE | 1,
-WAIT | 30,
-MOVE | 0,
-WAIT | 30,
-RECIPE_END
+    MOVE | 5,
+    WAIT | 30,
+    MOVE | 4,
+    WAIT | 30,
+    MOVE | 3,
+    WAIT | 30,
+    MOVE | 2,
+    WAIT | 30,
+    MOVE | 1,
+    WAIT | 30,
+    MOVE | 0,
+    WAIT | 30,
+    RECIPE_END
 };
 
 unsigned int cmd_sandbox_creation_motor0[100] = {
-MOVE | 5,
-WAIT | 30,
-MOVE | 4,
-WAIT | 30,
-MOVE | 3,
-WAIT | 30,
-MOVE | 2,
-WAIT | 30,
-MOVE | 1,
-SANDBOX,
-MOVE | 5,
-RECIPE_END
+    MOVE | 5,
+    WAIT | 30,
+    MOVE | 4,
+    WAIT | 30,
+    MOVE | 3,
+    WAIT | 30,
+    MOVE | 2,
+    WAIT | 30,
+    MOVE | 1,
+    SANDBOX,
+    MOVE | 5,
+    RECIPE_END
 };
 
 unsigned int cmd_pyramid[100] = {
-START_LOOP | 3,
-MOVE | 5,
-MOVE | 4,
-MOVE | 5,
-MOVE | 3,
-MOVE | 5,
-MOVE | 2,
-MOVE | 5,
-MOVE | 1,
-MOVE | 5,
-MOVE | 0,
-MOVE | 5,
-MOVE | 0,
-MOVE | 1,
-MOVE | 0,
-MOVE | 2,
-MOVE | 0,
-MOVE | 3,
-MOVE | 0,
-MOVE | 4,
-MOVE | 0,
-MOVE | 5,
-END_LOOP,
-WAIT | 1,
-RECIPE_END
+    START_LOOP | 3,
+    MOVE | 5,
+    MOVE | 4,
+    MOVE | 5,
+    MOVE | 3,
+    MOVE | 5,
+    MOVE | 2,
+    MOVE | 5,
+    MOVE | 1,
+    MOVE | 5,
+    MOVE | 0,
+    MOVE | 5,
+    MOVE | 0,
+    MOVE | 1,
+    MOVE | 0,
+    MOVE | 2,
+    MOVE | 0,
+    MOVE | 3,
+    MOVE | 0,
+    MOVE | 4,
+    MOVE | 0,
+    MOVE | 5,
+    END_LOOP,
+    WAIT | 1,
+    RECIPE_END
 };
 
 unsigned int cmd_provided[100] = {
-MOVE | 0,
-MOVE | 5,
-MOVE | 0,
-MOVE | 3,
-START_LOOP | 0,
-MOVE | 1,
-MOVE | 4,
-END_LOOP,
-MOVE | 0,
-MOVE | 2,
-WAIT | 0,
-MOVE | 3,
-WAIT | 0,
-MOVE | 2,
-MOVE | 3,
-WAIT | 31,
-WAIT | 31,
-WAIT | 31,
-MOVE | 4,
-RECIPE_END      
+    MOVE | 0,
+    MOVE | 5,
+    MOVE | 0,
+    MOVE | 3,
+    START_LOOP | 0,
+    MOVE | 1,
+    MOVE | 4,
+    END_LOOP,
+    MOVE | 0,
+    MOVE | 2,
+    WAIT | 0,
+    MOVE | 3,
+    WAIT | 0,
+    MOVE | 2,
+    MOVE | 3,
+    WAIT | 31,
+    WAIT | 31,
+    WAIT | 31,
+    MOVE | 4,
+    RECIPE_END      
 };
 
 unsigned int cmd_loop_err[100] = {
-MOVE | 0,
-MOVE | 1,
-MOVE | 2,
-MOVE | 3,
-START_LOOP,
-MOVE | 5,
-MOVE | 3,
-START_LOOP,
-MOVE | 4,
-END_LOOP,
-END_LOOP,
-MOVE | 5,
-RECIPE_END      
+    MOVE | 0,
+    MOVE | 1,
+    MOVE | 2,
+    MOVE | 3,
+    START_LOOP,
+    MOVE | 5,
+    MOVE | 3,
+    START_LOOP,
+    MOVE | 4,
+    END_LOOP,
+    END_LOOP,
+    MOVE | 5,
+    RECIPE_END      
 };
 
 unsigned int cmd_invalid_op[100] = {
-MOVE | 0,
-MOVE | 1,
-MOVE | 2,
-MOVE | 3,
-0x60,
-RECIPE_END      
+    MOVE | 0,
+    MOVE | 1,
+    MOVE | 2,
+    MOVE | 3,
+    0x60,
+    RECIPE_END      
 };
 
 unsigned int cmd_invalid_param[100] = {
-MOVE | 0,
-MOVE | 1,
-MOVE | 2,
-MOVE | 3,
-MOVE | 10,
-RECIPE_END      
+    MOVE | 0,
+    MOVE | 1,
+    MOVE | 2,
+    MOVE | 3,
+    MOVE | 10,
+    RECIPE_END      
 };
 
 unsigned int cmd_arr_sandbox_motor0[100] = {0};
+
 unsigned int cmd_arr_sandbox_motor1[100] = {0};
+
 unsigned int *recipe_arr[NUMBER_OF_RECIPES] = {
     cmd_arr1, 
     cmd_arr2, 
@@ -172,13 +174,13 @@ char recipes_description[NUMBER_OF_RECIPES][DESCRIPTION_LENGTH] = {
 };
 
 void printRecipes() {
-	int		n ;
+    int    n ;
     unsigned int i = 0;
     uint8_t buffer[100];
     
     for (i = 0; i < NUMBER_OF_RECIPES; i++) {
         n = sprintf((char *)buffer, "%s\r\n", recipes_description[i]);
-        USART_Write(USART2, buffer, n);	
+        USART_Write(USART2, buffer, n);    
     }
 }
 

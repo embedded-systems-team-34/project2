@@ -19,32 +19,32 @@ void TIM2_IRQHandler(void) {
 
     // Check for overflow interrupt
     if (((which_interrupt & TIM_SR_UIF) == TIM_SR_UIF)) {
-		 process_SM(&motor0_sm);
-		 process_SM(&motor1_sm);
-     TIM2->SR &= ~TIM_SR_UIF; // Clear overflow interrupt
+        process_SM(&motor0_sm);
+        process_SM(&motor1_sm);
+        TIM2->SR &= ~TIM_SR_UIF; // Clear overflow interrupt
     }
 }
 
 void configureSystemTick() {
-	// Enable the interrupt handler
-	NVIC_EnableIRQ(TIM2_IRQn); 
-	
-	// Enable clock of timer 2
-  RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
-	
-   // Set up TIM2 to generate system tick at 100 ms 
+    // Enable the interrupt handler
+    NVIC_EnableIRQ(TIM2_IRQn); 
     
-	// Set Prescaler
-  // 80 MHz / 4000 = 20 KHz -> 50 us
-  TIM2->PSC = 3999;
-	
-	TIM2->ARR = 2000;
-  TIM2->EGR |= TIM_EGR_UG;
-	
-	// Unmask TIM2 Interrupts
-	TIM2->DIER |= TIM_DIER_UIE;
-	
-	TIM2->CR1 |= TIM_CR1_CEN;
+    // Enable clock of timer 2
+    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
+    
+    // Set up TIM2 to generate system tick at 100 ms 
+    
+    // Set Prescaler
+    // 80 MHz / 4000 = 20 KHz -> 50 us
+    TIM2->PSC = 3999;
+    
+    TIM2->ARR = 2000;
+    TIM2->EGR |= TIM_EGR_UG;
+    
+    // Unmask TIM2 Interrupts
+    TIM2->DIER |= TIM_DIER_UIE;
+    
+    TIM2->CR1 |= TIM_CR1_CEN;
 }
 
 void parseUserInput(char *string,unsigned int length) {
@@ -81,19 +81,19 @@ void parseUserInput(char *string,unsigned int length) {
 void getLine() {
     
     char rxByte;
-	int		n ;
+    int    n ;
     char userinput[100];
     unsigned int index = 0;
     
     n = sprintf((char *)buffer, "> ");
-	USART_Write(USART2, buffer, n);
+    USART_Write(USART2, buffer, n);
     index = 0;
     // Wait until the user enters a carrige return
     while(1) {
         // read the user input and echo it back to the screen
-        rxByte = USART_Read(USART2);	
+        rxByte = USART_Read(USART2);    
         if (rxByte == 0xd) {
-					  userinput[index] = '\0';
+            userinput[index] = '\0';
             n = sprintf((char *)buffer, "\r\n");
             USART_Write(USART2, buffer, n);
             parseUserInput(userinput, index);
@@ -101,30 +101,30 @@ void getLine() {
         }
         // echo user character back to the screen
         n = sprintf((char *)buffer, "%s", &rxByte);
-        USART_Write(USART2, buffer, n);	
+        USART_Write(USART2, buffer, n);    
         userinput[index++] = (char)rxByte;
-	}	
+    }    
 }
 
 int main(void){
     
-	unsigned int initial_motor_delay; 
-	
-	System_Clock_Init(); // Switch System Clock = 80 MHz
-	LED_Init();
-	UART2_Init();   
+    unsigned int initial_motor_delay; 
+    
+    System_Clock_Init(); // Switch System Clock = 80 MHz
+    LED_Init();
+    UART2_Init();   
     
     printHelp();
     
-    initial_motor_delay = motorInit();		
+    initial_motor_delay = motorInit();        
     
-	// Initalize the two state machine objects
-	init_SM( &motor0_sm, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(3));
-	init_SM( &motor1_sm, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(4));
-	
-	configureSystemTick();
-	
-	while (1){
+    // Initalize the two state machine objects
+    init_SM( &motor0_sm, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(3));
+    init_SM( &motor1_sm, initial_motor_delay, 1, getRecipeStartAddress(1), getRecipeStartAddress(4));
+    
+    configureSystemTick();
+    
+    while (1){
         getLine();
-	}
+    }
 }

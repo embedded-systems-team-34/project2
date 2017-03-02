@@ -54,7 +54,7 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
         // We are hot swapping a recipe here
         // Tear down current state machine and re-initalize the new state machine with new paramaters
         // Also need to reset motor position back to init position
-        initial_motor_delay = motorInit();	
+        initial_motor_delay = motorInit();    
         init_SM(state_machine_params, initial_motor_delay, state_machine_params->channel, getRecipeStartAddress(recipe_index), state_machine_params->sandbox_arr);
     }   
     
@@ -76,7 +76,7 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
         state_machine_params->program_status = RUNNING;
         state_machine_params->is_paused = 0;
     }     
-    // Print out all avaliable recipes with a brief description
+    // Print out all available recipes with a brief description
     else if (command == 'H') {
         printRecipes();
     }   
@@ -280,13 +280,13 @@ void process_SM(struct fsm *state_machine_params) {
 
 // Prints a help message documenting the commands for the user
 void printHelp() {
-	int		n ;
+    int        n ;
     unsigned int i = 0;
     uint8_t buffer[100];
     
     for (i = 0; i < 15; i++) {
         n = sprintf((char *)buffer, "%s\r\n", help_text[i]);
-        USART_Write(USART2, buffer, n);	
+        USART_Write(USART2, buffer, n);    
     }
     
 }
