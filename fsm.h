@@ -73,6 +73,5 @@ void process_SM(struct fsm *state_machine_params);
 void parseSerialCommand(struct fsm *state_machine_params, char command);
 unsigned int isAnInt(char command);
 void printHelp(void);
-void updateStatus(struct fsm *state_machine_params);
 
 #endif

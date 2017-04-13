@@ -43,24 +43,6 @@ unsigned int MOTOR_POS_ARR[6] = {
 // Move both motors to a known position after a reset
 // return - the duration of delay to allow motor to reach known position
 unsigned int motorInit() {
-    // Initialize PWM for channels 1 and two
-    // Configure PA0 for alternate function
-    // Enable clk to PortA
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    
-    // Set PA0 to be alternate function
-    GPIOA->MODER &= ~GPIO_MODER_MODER0;        // Clear moder register mode0[1:0]
-    GPIOA->MODER |= GPIO_MODER_MODER0_1;    // Set alternate function mode 10
-    
-    // Set Alternate function lower register to AF2 so that A0 is set connected to TIM5_CH1
-    GPIOA->AFR[0] = 0x2;
-        
-    // Set PA1 to be alternate function
-    GPIOA->MODER &= ~GPIO_MODER_MODER1;        // Clear moder register mode0[1:0]
-    GPIOA->MODER |= GPIO_MODER_MODER1_1;    // Set alternate function mode 10        
-        
-    // Set Alternate function lower register to AF2 so that A0 is set connected to TIM5_CH1
-    GPIOA->AFR[0] |= 0x20;
     
     pwmInit();
     
