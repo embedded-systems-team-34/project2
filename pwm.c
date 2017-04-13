@@ -78,7 +78,8 @@ void pwmInit() {
     // Set PortA as output
     out8(dir,0x00);
 
-    // Increase thread priority so PWM signal will always be stable
+    // Increase thread priority so PWM signal will always be stable and can
+    // run over other threads
     pthread_setschedprio( pwm_th, 12 );
     pthread_create(&pwm_th, NULL, pwm_channel, NULL);
 

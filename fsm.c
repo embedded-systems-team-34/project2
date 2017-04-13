@@ -274,8 +274,6 @@ void process_SM(struct fsm *state_machine_params) {
             state_machine_params->current_state = STATE_ERROR;
             break;
     } // end switch
-    
-    updateStatus(state_machine_params);
 }
 
 // Prints a help message documenting the commands for the user
@@ -286,47 +284,7 @@ void printHelp() {
     
     for (i = 0; i < 15; i++) {
         n = sprintf((char *)buffer, "%s\r\n", help_text[i]);
-        USART_Write(USART2, buffer, n);    
+        printf("%s" buffer);    
     }
     
-}
-
-// Update the LED status
-void updateStatus(struct fsm *state_machine_params) {
-    
-    state_machine_params->ms_count ^= 1;
-    
-    // Channel 0 uses LED Red, Channel 1 uses LED Green
-    switch (state_machine_params->program_status) {
-        //If the recipe is running, the LED is on
-        case RUNNING:
-            // If channel 0 update red LED, else update green 
-            (state_machine_params->channel == 0) ? Red_LED_On() : Green_LED_On();
-            break;
-        //If the recipe is not running, the LED is off
-        case PAUSED:
-            // If channel 0 update red LED, else update green 
-            (state_machine_params->channel == 0) ? Red_LED_Off() : Green_LED_Off();
-            break;
-        //If there's a loop error, blink the LED in 100ms intervals
-        case LOOP_ERROR:
-            if (state_machine_params->ms_count == 1) {
-                // If channel 0 update red LED, else update green 
-                (state_machine_params->channel == 0) ? Red_LED_On() : Green_LED_On();
-            } else {
-                // If channel 0 update red LED, else update on green 
-                (state_machine_params->channel == 0) ? Red_LED_Off() : Green_LED_Off();
-            }
-            break;
-        //If there's an invalid opcode error, blink the LED in 1s intervals
-        case COMMAND_ERROR:
-            state_machine_params->second_count += 1;
-            if (state_machine_params->second_count == 10) {
-                // If channel 0 update red LED, else update on green 
-                (state_machine_params->channel == 0) ? Red_LED_Toggle() : Green_LED_Toggle();
-                state_machine_params->second_count = 0;
-            }
-            break;
-        default:;
-    }   
 }

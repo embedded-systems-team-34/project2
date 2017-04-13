@@ -180,7 +180,7 @@ void printRecipes() {
     
     for (i = 0; i < NUMBER_OF_RECIPES; i++) {
         n = sprintf((char *)buffer, "%s\r\n", recipes_description[i]);
-        USART_Write(USART2, buffer, n);    
+        printf("%s", buffer);    
     }
 }
 

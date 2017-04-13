@@ -22,6 +22,8 @@
 #include <sys/mman.h>
 #include <hw/inout.h>
 
+// 100 ms period in ns
+#define SYSTEM_TICK_PERIOD (100000000)
 // 20 ms period in ns
 #define DUTY_CYCLE_PERIOD (20000000)
 #define MASK_CHANNEL_0 (0x1)
