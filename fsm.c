@@ -49,7 +49,6 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
     // Integer represents a request to switch recipes on the current channel
     // Check if the char value is between 0x30-0x39 
     if (isAnInt(command) == 1) {
-    	printf("Got an int command\n");
         // Command was an int so switch recipes to the passed in command
         recipe_index = command & 0xF;
         // We are hot swapping a recipe here
@@ -91,7 +90,6 @@ void parseSerialCommand(struct fsm *state_machine_params, char command) {
         state_machine_params->current_state = STATE_INCREMENTAL_MOVE;
         state_machine_params->incrementalMoveDirection = -1;
     } else if (command == 'B') {
-    	printf("Got a b command\n");
         // This opcode not only restarts a recipe but also begins execution immediately 
         // taking the state machine out of pause
         state_machine_params->program_status = RUNNING;
@@ -168,8 +166,6 @@ void process_SM(struct fsm *state_machine_params) {
 
     switch(state_machine_params->current_state) {
         case STATE_PARSE:
-
-        	//printf("In parse\n");
             
             // Do not parse the current command unless we are not paused
             if (state_machine_params->is_paused == 0) {
@@ -193,7 +189,6 @@ void process_SM(struct fsm *state_machine_params) {
                         if (current_argument > 5) {
                             state_machine_params->program_status = COMMAND_ERROR;
                             state_machine_params->current_state = STATE_ERROR;
-                            printf("Invalid move param\n");
                         } else {
                             state_machine_params->delay = set_motor_position( state_machine_params->channel, current_argument);
                             state_machine_params->current_state = STATE_WAIT;
@@ -215,7 +210,6 @@ void process_SM(struct fsm *state_machine_params) {
                         if (state_machine_params->in_loop_flag == 1) {
                             state_machine_params->program_status = LOOP_ERROR;
                             state_machine_params->current_state = STATE_ERROR;
-                            printf("Nested Loop\n");
                             break;
                         }
                         // set in loop flag to indicate that we are in a loop
@@ -255,7 +249,6 @@ void process_SM(struct fsm *state_machine_params) {
                         break;
                     // Invalid opcode
                     default:
-                    	printf("Invalid OPCODE\n");
                         state_machine_params->program_status = COMMAND_ERROR;
                         state_machine_params->current_state = STATE_ERROR;
                 } // end opcode parse
@@ -279,7 +272,6 @@ void process_SM(struct fsm *state_machine_params) {
             break;
         case STATE_ERROR:
         default:
-        	printf("IN ERROR STATE\n");
             // Invalid opcode or a nested loop 
             state_machine_params->current_state = STATE_ERROR;
             break;
