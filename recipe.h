@@ -12,7 +12,6 @@
 #ifndef RECIPE_H
 #define RECIPE_H 
 
-#include "UART.h"
 #include <stdio.h>
 
 #define OPCODE_MASK (0xE0)

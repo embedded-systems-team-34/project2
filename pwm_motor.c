@@ -8,7 +8,6 @@
 #include "motor.h"
 #include "fsm.h"
 
-uint8_t buffer[BufferSize];
 struct fsm motor0_sm;
 struct fsm motor1_sm;
 
@@ -63,11 +62,12 @@ void parseUserInput(char *string,unsigned int length) {
 void getLine() {
     char userinput[100];
     
-    printf("> ");
+    printf(">");
+    fflush(stdout);
     // Wait until the user enters a carrige return
-    while(gets(buff) != NULL) {
-        parseUserInput(userinput,strlen(buff));
-    }    
+    gets(userinput);
+    fflush(stdout);
+    parseUserInput(userinput,strlen(userinput));
 }
 
 int main(int argc, char *argv[]) {
@@ -75,9 +75,9 @@ int main(int argc, char *argv[]) {
     unsigned int initial_motor_delay;   
 	pthread_t systemtick_th;    
 
-    printHelp();    
+    printHelp();
     
-    initial_motor_delay = motorInit();  
+    initial_motor_delay = motorInit();
     
     // Initalize the two state machine objects
     init_SM( &motor0_sm, initial_motor_delay, 0, getRecipeStartAddress(0), getRecipeStartAddress(3));
@@ -86,7 +86,10 @@ int main(int argc, char *argv[]) {
     // Increase thread priority of system tick above that of general IO
     pthread_setschedprio( systemtick_th, 11 );
     pthread_create(&systemtick_th, NULL, systemTick, NULL);
-    
+
+    //pwmInit();
+    //setPWMDuty( 0, 400000);
+    //setPWMDuty( 1, 800000);
 
 	while(1) {
         getLine();

@@ -14,7 +14,6 @@
 
 #include "motor.h"
 #include "recipe.h"
-#include "LED.h"
 
 typedef enum {
     STATE_PARSE,

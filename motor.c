@@ -15,13 +15,13 @@
 
 #define NUM_MOTOR_POSITIONS (6)
 
-// Motor duty cycle has resolution of 1 us
-#define MOTOR_POSITON_ZERO (490)
-#define MOTOR_POSITON_ONE (719)
-#define MOTOR_POSITON_TWO (1039)
-#define MOTOR_POSITON_THREE (1359)
-#define MOTOR_POSITON_FOUR (1679)
-#define MOTOR_POSITON_FIVE (1969)
+// Motor duty cycle has resolution of 1 ns
+#define MOTOR_POSITON_ZERO (490000)
+#define MOTOR_POSITON_ONE (719000)
+#define MOTOR_POSITON_TWO (1039000)
+#define MOTOR_POSITON_THREE (1359000)
+#define MOTOR_POSITON_FOUR (1679000)
+#define MOTOR_POSITON_FIVE (1969000)
 
 // delay for the motor to change one position in increments of 100 ms
 #define ONE_POSITION_DELAY (2)
@@ -44,7 +44,16 @@ unsigned int MOTOR_POS_ARR[6] = {
 // return - the duration of delay to allow motor to reach known position
 unsigned int motorInit() {
     
-    pwmInit();
+	static unsigned int firstTime = 0;
+
+	// pwmInit sets up the pwm threads.  Only want to call this the first time
+	// the program executes. If motorInit is called and is not the first time
+	// then program is performing a soft reset, so we do not want to mess with
+	// the PWM threads, just the motor position
+	if (firstTime == 0) {
+		pwmInit();
+		firstTime += 1;
+	}
     
     // Command a known position from motors on startup
     set_motor_position(0,0);

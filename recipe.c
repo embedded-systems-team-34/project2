@@ -176,7 +176,7 @@ char recipes_description[NUMBER_OF_RECIPES][DESCRIPTION_LENGTH] = {
 void printRecipes() {
     int    n ;
     unsigned int i = 0;
-    uint8_t buffer[100];
+    char buffer[100];
     
     for (i = 0; i < NUMBER_OF_RECIPES; i++) {
         n = sprintf((char *)buffer, "%s\r\n", recipes_description[i]);
