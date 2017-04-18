@@ -87,10 +87,6 @@ int main(int argc, char *argv[]) {
     pthread_setschedprio( systemtick_th, 11 );
     pthread_create(&systemtick_th, NULL, systemTick, NULL);
 
-    //pwmInit();
-    //setPWMDuty( 0, 400000);
-    //setPWMDuty( 1, 800000);
-
 	while(1) {
         getLine();
 	}
